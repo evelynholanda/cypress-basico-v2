@@ -10,6 +10,7 @@ beforeEach(() => {
 })
 
 describe('Central de Atendimento ao Cliente TAT', function() {
+    const threeSecondsinMs = 3000
 
     it('Valid title in application', function() {
         cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT' )
@@ -20,6 +21,8 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
         const longText = 'teste, teste, teste, teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste,teste '
         
+            cy.clock()
+
             cy.get('#firstName').type('Evelyn')
             cy.get('#lastName').type('Holanda')
             cy.get('#email').type('evelynholanda@exemplo.com')
@@ -27,13 +30,18 @@ describe('Central de Atendimento ao Cliente TAT', function() {
             cy.contains('button', 'Enviar').click()
             //Asserts
             cy.get('.success').should('be.visible')
+            cy.tick(threeSecondsinMs)
+            cy.get('.success').should('not.be.visible')
     
         });
 
     it('Valid Error message after fill credencials incorrect', () => {
+        cy.clock()
         cy.errorCredencial()
         //Asserts
         cy.get('.error').should('be.visible')
+        cy.tick(threeSecondsinMs)
+        cy.get('.success').should('not.be.visible')
         
     });
 
@@ -48,9 +56,12 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     });
 
     it('Valid Error message after phone is mandatory but not fill with number field', () => {
+        cy.clock()
         cy.errorCredencial()
         //Asserts
         cy.get('.error').should('be.visible')
+        cy.tick(threeSecondsinMs)
+        cy.get('.success').should('not.be.visible')
         
     });
 
@@ -75,15 +86,22 @@ describe('Central de Atendimento ao Cliente TAT', function() {
     });
 
     it('Valid that message if not fill form should have an error', () => {
+        cy.clock()
         cy.contains('button', 'Enviar').click()
         //Asserts
         cy.get('.error').should('be.visible')
+        cy.tick(threeSecondsinMs)
+        cy.get('.success').should('not.be.visible')
         
     });
 
     it('Valid Custom Commands with success', () => {
+        cy.clock()
         cy.fillMandatoryWithsubmit()
         cy.get('.success').should('be.visible')
+        cy.tick(threeSecondsinMs)
+        cy.get('.success').should('not.be.visible')
+        
         
     });
 
@@ -202,4 +220,38 @@ describe('Central de Atendimento ao Cliente TAT', function() {
 
     });
 
-});
+
+        it('show and unshow the sucess message with.invoke', () => {
+            cy.get('.success')
+              .should('not.be.visible')
+              .invoke('show')
+              .should('be.visible')
+              .and('contain', 'Mensagem enviada com sucesso.')
+              .invoke('hide')
+              .should('not.be.visible')
+            cy.get('.error')
+              .should('not.be.visible')
+              .invoke('show')
+              .should('be.visible')
+              .and('contain', 'Valide os campos obrigatórios!')
+              .invoke('hide')
+              .should('not.be.visible')
+          })
+
+          it('Doing Request HTTP', () => {
+
+            cy.request('https://cac-tat.s3.eu-central-1.amazonaws.com/index.html')
+            .should(function(responsecode) {
+                //DESESTRUTURANDO OBJETO EM JAVASCRIPT
+                const { status, statusText, body} = responsecode
+                expect(status).to.equal(200)
+                expect(statusText).to.equal('OK')
+                expect(body).to.include('CAC TAT')
+
+
+            })
+            
+          });
+        
+    });
+

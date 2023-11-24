@@ -167,6 +167,26 @@ SIMULANDO QUE O TESTE TA QUEBRANDO - ou algo foi modificado
 No arquio index.html
 
 
+OUTROS COMANDOS AVANÇADOS
+CY.CLOCK E CY.TICK
+   cy.clock()
+   xxxxxx
+   cy.get('.success').should('be.visible')
+   cy.tick(threeSecondsinMs)
+   cy.get('.success').should('not.be.visible')
+
+
+LOADASH
+Cypress._.times(3, function() {
+    it('Test police privacy indepedent', () => {
+      bloco COMANDOS
+  })
+})
+
+cy.request
+https://dev.to/walmyrlimaesilv/cy-request-vs-cy-intercept-cmi
+https://talkingabouttesting.com/2021/02/07/como-verificar-a-estrutura-do-body-de-um-esquema-json-com-cypress/
+
 
 
 
