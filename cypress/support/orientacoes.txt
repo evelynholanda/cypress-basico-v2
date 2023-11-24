@@ -126,6 +126,8 @@ No arquivo package.json
 README.md
 
 15- Integração Contínua
+
+PASSO 1
 criar arquivos
 .github/
 .github/workflows
@@ -148,6 +150,25 @@ jobs:
 
 Outros modelos
 Referência: https://github.com/cypress-io/github-action#basic
+
+PASSO 2
+git status            verificar modificações
+git add .             verificar arquivos modificados
+git commit -m         Comitar arquivos
+git push origin main  enviar arquivos github
+
+PASSO 3
+Na aba actions
+Vai validar que o JOb esta rodando e depois ira Passar
+
+
+PASSO 4
+SIMULANDO QUE O TESTE TA QUEBRANDO - ou algo foi modificado
+No arquio index.html
+
+
+
+
 
 
 
