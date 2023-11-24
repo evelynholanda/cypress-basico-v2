@@ -1,0 +1,154 @@
+INSTALAÇÕES E PRE REQUISITOS
+1- Instalar node, npm, git, vscode
+2- Instalar cypress 
+npm install cypress@9.5.1 --save-dev
+
+3- Abrir cypress 1 vez
+npx cypress open
+
+4- Visitar pagina local e validar título pagina
+colocar beforeach
+
+ cy.visit('./src/index.html')
+ cy.title().should('be.equal', 'Central de Atendimento ao Cliente TAT' )
+
+
+ OBS: outros formatos caso a pagina não esteja local
+https://talkingabouttesting.com/2021/02/11/como-visitar-uma-pagina-que-esta-em-meu-computador-com-cypress/
+https://docs.cypress.io/api/commands/visit#Visit-local-files
+
+
+ 5- Rodar pra ve teste passa
+ npx cypress open
+
+ 6- Digitando em campos e clicando em elemento
+ cy.get()- pegar elemento
+ cy.type()- escrever na campo
+ cy.click() - clicar botao
+ 
+
+  cy.get('#firstName').type('Evelyn')
+  cy.get('button[type= "submit"]').click()
+  cy.get('.success').should('be.visible')
+  cy.should()- fazer validação de mensagem, textos etc...
+  cy.should('be.empty')
+  cy.should('have.value', '');
+
+6- Para palavras grandes no campo 
+cy.get('#open-text-area').type(longText, { delay: 0} )
+
+7- Comandos customizados
+- No arquivo support/commands
+criar comando customizados
+
+Cypress.Commands.add ('fillMandatoryWithsubmit', function() {
+        cy.get('#firstName').type('Evelyn')....
+})
+
+- importar comando no arquivo principal
+import '../support/commands'
+
+- chamar a função do comando personalizado criado
+ cy.fillMandatoryWithsubmit()
+
+ 8- Buscar elementos com cy.contains()
+ Passar 2 argumentos
+ trocar o comando
+  cy.get('button[type= "submit"]').click()
+
+por este
+cy.contains('button', 'Enviar').click()
+
+
+9- Clicar seleção suspensa
+cy.get('select').select('Blog') // Seleção pelo texto Blog
+cy.get('select').select('youtube') // Seleção pelo value youtube
+cy.get('select').select(1) // Seleção pelo índice 1
+
+10- Marcando inputs do tipo radio
+
+ cy.get('input[type="radio"][value="feedback"]')
+        .check()
+        .should('have.value', 'feedback')
+
+ // MANEIRA MAIS CORRETA DE MARCAR CADA UM E CHECAR
+
+    it('Select for each radio button', function() {
+        cy.get('input[type="radio"]')
+            .should('have.length', 3)
+            .each(function($radio) {
+                cy.wrap($radio).check()
+                cy.wrap($radio).should('be.checked')
+            })
+    })
+
+  11- Marcando (e desmarcando) inputs do tipo checkbox
+    cy.get('input[type="checkbox"]').check().
+    cy.get('input[type="checkbox"]').uncheck().
+
+    OBS: https://talkingabouttesting.com/2021/06/14/como-marcar-varios-checkboxes-de-uma-so-vez-com-cypress/
+
+  12- Fazendo upload de arquivos com cypress
+ cy,get('input[type= "file"]#file-upload').selectFile('cypress/fixtures/example.json')
+
+ Exemplo de validação cy.get("input[type='file']")
+            .should('not.have.value')
+            .selectFile('./cypress/fixtures/example.json')
+            .should(function($input) {
+               // console.log($input)
+                expect($input[0].files[0].name).to.equal('example.json')
+        
+  OBS : https://www.youtube.com/watch?v=xwltoOnmfVE
+
+  OBS: para arrastar arquivo  .selectFile('./cypress/fixtures/example.json', {action: 'drag-drop'})
+  OBS: Utilizando Alias
+
+   cy.fixture('example').as('exampleFile')
+       cy.get("input[type='file']")
+        .selectFile('@exampleFile')
+
+  13- Lidando com links que abrem em outra aba
+- Validando atributo de todos os navegadores quando tem um link
+   .should('have.attr', 'target', '_blank')
+
+- Validando uma nova aba aberta
+  cy.get('#privacy a')
+      .invoke('removeAttr', 'target')
+
+
+
+14- Simulando o viewport de um dispositivo móvel
+No arquivo package.json
+
+ "cy:opem:mobile":"cypress open --config  viewportWidht=410 viewportHeight=860"
+
+ 15- Documentação do projeto
+README.md
+
+15- Integração Contínua
+criar arquivos
+.github/
+.github/workflows
+
+E dentro colocar o seguinte:
+
+name: End-to-end tests 🧪
+on: [push]
+jobs:
+  cypress-run:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      # Install NPM dependencies, cache them correctly
+      # and run all Cypress tests
+      - name: Cypress run
+        uses: cypress-io/github-action@v2
+
+
+Outros modelos
+Referência: https://github.com/cypress-io/github-action#basic
+
+
+
+
